@@ -5,13 +5,17 @@ from conans.client.tools.oss import get_gnu_triplet
 class DebianDependencyConan(ConanFile):
     name = "libudev1"
     version = "237"
-    build_version = "3ubuntu10.24" 
+    build_version = "3ubuntu10.25" 
     homepage = "https://packages.ubuntu.com/bionic-updates/libudev1"
     # dev_url = https://packages.ubuntu.com/bionic-updates/libudev-dev
     description = "libudev provides APIs to introspect and enumerate devices on the local system"
     url = "https://github.com/jens-totemic/conan-libudev1"    
     license = "LGPL"
     settings = "os", "arch"
+
+    def configure(self):
+        if self.settings.os != "Linux":
+            raise ConanInvalidConfiguration("This library is only supported on Linux")
 
     def translate_arch(self):
         arch_string = str(self.settings.arch)
@@ -47,9 +51,9 @@ class DebianDependencyConan(ConanFile):
         if self.settings.os == "Linux":
             if self.settings.arch == "x86_64":
                 # https://packages.ubuntu.com/bionic-updates/amd64/libudev1/download
-                sha_lib = "076c3f91a74a0ee4e5bc717d0535b7195fc87037017bd5b542cffea5d5b33270"
+                sha_lib = "cb3bc81d70e699664577f9f705feb580d0f6123775ae8925104495a6744c3966"
                 # https://packages.ubuntu.com/bionic-updates/amd64/libudev-dev/download
-                sha_dev = "2b61e8e3e7c34695628888a5a0757a23bf619a3deee5d4f8a1d5be5868828d6f"
+                sha_dev = "e49f5cffa31358caf43d4380068cbce9f730a201aaf5894ea163b5aa2a6d66f6"
                 
                 url_lib = ("http://us.archive.ubuntu.com/ubuntu/pool/main/s/systemd/libudev1_%s-%s_%s.deb"
                    % (str(self.version), self.build_version, self.translate_arch()))
@@ -57,9 +61,9 @@ class DebianDependencyConan(ConanFile):
                    % (str(self.version), self.build_version, self.translate_arch()))
             elif self.settings.arch == "armv8":
                 # https://packages.ubuntu.com/bionic-updates/arm64/libudev1/download
-                sha_lib = "4360a9ce5ab47c50464cfda67dfbc761f6bd99ca7e9c01e8b2cc1e0323db32be"
+                sha_lib = "701869a7d93ae0eb9024d882ce227e1af12017e58e1da7933981212695e2a404"
                 # https://packages.ubuntu.com/bionic-updates/arm64/libudev-dev/download
-                sha_dev = "61c34819d15d85aaaaba3b28f48acdd3cd807ca34752817144aa62c5aaca83f1"
+                sha_dev = "8d97ceb331b00b9024e45cfc3c9e34d27a0b60fa2a48d7d496a564adf38ce0e8"
                 
                 url_lib = ("http://ports.ubuntu.com/ubuntu-ports/pool/main/s/systemd/libudev1_%s-%s_%s.deb"
                    % (str(self.version), self.build_version, self.translate_arch()))
@@ -67,9 +71,9 @@ class DebianDependencyConan(ConanFile):
                    % (str(self.version), self.build_version, self.translate_arch()))
             else: # armv7hf
                 # https://packages.ubuntu.com/bionic-updates/armhf/libudev1/download
-                sha_lib = "b132cc6e7bc0d9c8879b8dea1a933711c31d97588697312daad34c4092bf0f8f"
+                sha_lib = "635773e5a0b2654416801f4d48a4d692cec1c959d02c04f2271154490cd7d211"
                 # https://packages.ubuntu.com/bionic-updates/armhf/libudev-dev/download
-                sha_dev = "8a68930f31934af422d9ed6bfee20fd4a957036b399ca312cac05941ea136d43"
+                sha_dev = "cc4505f472f93d3718e947152b07171ad1fb8e995ce2606321299ad52432884f"
                 
                 url_lib = ("http://ports.ubuntu.com/ubuntu-ports/pool/main/s/systemd/libudev1_%s-%s_%s.deb"
                    % (str(self.version), self.build_version, self.translate_arch()))
