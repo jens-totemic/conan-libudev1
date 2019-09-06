@@ -4,10 +4,10 @@ from conans.client.tools.oss import get_gnu_triplet
 
 class DebianDependencyConan(ConanFile):
     name = "libudev1"
-    version = "237"
-    build_version = "3ubuntu10.25" 
-    homepage = "https://packages.ubuntu.com/bionic-updates/libudev1"
-    # dev_url = https://packages.ubuntu.com/bionic-updates/libudev-dev
+    version = "229"
+    build_version = "4ubuntu21.22" 
+    homepage = "https://packages.ubuntu.com/xenial-updates/libudev1"
+    # dev_url = https://packages.ubuntu.com/xenial-updates/libudev-dev
     description = "libudev provides APIs to introspect and enumerate devices on the local system"
     url = "https://github.com/jens-totemic/conan-libudev1"    
     license = "LGPL"
@@ -50,30 +50,30 @@ class DebianDependencyConan(ConanFile):
     def build(self):
         if self.settings.os == "Linux":
             if self.settings.arch == "x86_64":
-                # https://packages.ubuntu.com/bionic-updates/amd64/libudev1/download
-                sha_lib = "cb3bc81d70e699664577f9f705feb580d0f6123775ae8925104495a6744c3966"
-                # https://packages.ubuntu.com/bionic-updates/amd64/libudev-dev/download
-                sha_dev = "e49f5cffa31358caf43d4380068cbce9f730a201aaf5894ea163b5aa2a6d66f6"
+                # https://packages.ubuntu.com/xenial-updates/amd64/libudev1/download
+                sha_lib = "f23a5177625f76aadbccc2294b2194aadff62340cdf9c060d87b30026bc06940"
+                # https://packages.ubuntu.com/xenial-updates/amd64/libudev-dev/download
+                sha_dev = "b1ecd7a654c196c0d7dbedb57605e00fa0141175a0adbc749bf425b3cac1a52a"
                 
                 url_lib = ("http://us.archive.ubuntu.com/ubuntu/pool/main/s/systemd/libudev1_%s-%s_%s.deb"
                    % (str(self.version), self.build_version, self.translate_arch()))
                 url_dev = ("http://us.archive.ubuntu.com/ubuntu/pool/main/s/systemd/libudev-dev_%s-%s_%s.deb"
                    % (str(self.version), self.build_version, self.translate_arch()))
             elif self.settings.arch == "armv8":
-                # https://packages.ubuntu.com/bionic-updates/arm64/libudev1/download
-                sha_lib = "701869a7d93ae0eb9024d882ce227e1af12017e58e1da7933981212695e2a404"
-                # https://packages.ubuntu.com/bionic-updates/arm64/libudev-dev/download
-                sha_dev = "8d97ceb331b00b9024e45cfc3c9e34d27a0b60fa2a48d7d496a564adf38ce0e8"
+                # https://packages.ubuntu.com/xenial-updates/arm64/libudev1/download
+                sha_lib = "04278009fdc066b464d89d7793b6bdb10d1197abee79e7c516ca1395a4eca9e6"
+                # https://packages.ubuntu.com/xenial-updates/arm64/libudev-dev/download
+                sha_dev = "713dddc53cf119c3c8d8072b78c6e158815db7ac287aa4b836fcae9bf8b3d643"
                 
                 url_lib = ("http://ports.ubuntu.com/ubuntu-ports/pool/main/s/systemd/libudev1_%s-%s_%s.deb"
                    % (str(self.version), self.build_version, self.translate_arch()))
                 url_dev = ("http://ports.ubuntu.com/ubuntu-ports/pool/main/s/systemd/libudev-dev_%s-%s_%s.deb"
                    % (str(self.version), self.build_version, self.translate_arch()))
             else: # armv7hf
-                # https://packages.ubuntu.com/bionic-updates/armhf/libudev1/download
-                sha_lib = "635773e5a0b2654416801f4d48a4d692cec1c959d02c04f2271154490cd7d211"
-                # https://packages.ubuntu.com/bionic-updates/armhf/libudev-dev/download
-                sha_dev = "cc4505f472f93d3718e947152b07171ad1fb8e995ce2606321299ad52432884f"
+                # https://packages.ubuntu.com/xenial-updates/armhf/libudev1/download
+                sha_lib = "eaed25258fb0a6f5cc1ac016e14a2cd4646a690a0e6599f886174f4a789d5c5d"
+                # https://packages.ubuntu.com/xenial-updates/armhf/libudev-dev/download
+                sha_dev = "6f85a06df5da97051aa144206ce16292cf6d2c317fab453c8f6fdf4baa7b19f6"
                 
                 url_lib = ("http://ports.ubuntu.com/ubuntu-ports/pool/main/s/systemd/libudev1_%s-%s_%s.deb"
                    % (str(self.version), self.build_version, self.translate_arch()))
@@ -81,6 +81,10 @@ class DebianDependencyConan(ConanFile):
                    % (str(self.version), self.build_version, self.translate_arch()))
             self._download_extract_deb(url_lib, sha_lib)
             self._download_extract_deb(url_dev, sha_dev)
+            # remove libudev.so which is an absolute link to /lib/arm-linux-gnueabihf/libudev.so.1.6.4
+            lib_so_path = "usr/lib/%s/libudev.so" % self.triplet_name()
+            os.remove(lib_so_path)
+            os.symlink("libudev.so.1.6.4", lib_so_path)
         else:
             self.output.info("Nothing to be done for this OS")
 
